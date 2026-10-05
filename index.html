@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GameVault Marketplace</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f5f6f4;
+      color: #202622;
+    }
+
+    header {
+      height: 68px;
+      background: white;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 max(16px, calc((100% - 1180px) / 2));
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: #173e35;
+      font-size: 21px;
+      font-weight: bold;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: #173e35;
+      color: white;
+      border-radius: 7px;
+      display: grid;
+      place-items: center;
+    }
+
+    nav {
+      display: flex;
+      gap: 5px;
+    }
+
+    button {
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    nav button {
+      border: 0;
+      background: transparent;
+      padding: 10px;
+    }
+
+    .primary,
+    .sell-btn {
+      background: #173e35;
+      color: white;
+      border: 0;
+      border-radius: 6px;
+      padding: 11px 14px;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .hero {
+      background: #173e35;
+      color: white;
+      padding: 48px max(18px, calc((100% - 1180px) / 2));
+    }
+
+    .hero h1 {
+      font-size: 38px;
+      margin-bottom: 12px;
+    }
+
+    .hero h1 span {
+      color: #c5e06f;
+    }
+
+    .hero p {
+      color: #dce8e2;
+      margin-bottom: 22px;
+    }
+
+    .hero button {
+      background: #c5e06f;
+      color: #173e35;
+      border: 0;
+      border-radius: 6px;
+      padding: 13px 18px;
+    }
+
+    .market,
+    .dashboard {
+      max-width: 1180px;
+      margin: auto;
+      padding: 26px 18px;
+    }
+
+    .market-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .market-header p,
+    .muted {
+      color: #68716c;
+      margin-top: 5px;
+    }
+
+    .market-tools {
+      display: flex;
+      gap: 9px;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d8dfda;
+      border-radius: 6px;
+      background: white;
+      font-size: 15px;
+    }
+
+    .search {
+      width: 250px;
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: 1fr 1fr 190px;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .results-line {
+      color: #68716c;
+      font-size: 14px;
+      margin: 12px 0;
+    }
+
+    .listings {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .listing {
+      overflow: hidden;
+      border-radius: 7px;
+      background: white;
+      box-shadow: 0 2px 8px #16281e14;
+    }
+
+    .listing img {
+      width: 107%;
+      height: 190px;
+      object-fit: cover;
+      background: #e9ece9;
+    }
+
+    .listing-body {
+      padding: 15px;
+    }
+
+    .game {
+      color: #53635a;
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 7px;
+    }
+
+    .listing h3 {
+      min-height: 40px;
+      line-height: 1.35;
+    }
+
+    .price {
+      color: #173e35;
+      font-size: 21px;
+      font-weight: bold;
+      margin: 12px 0;
+    }
+
+    .seller {
+      color: #68716c;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .listing-meta {
+      display: flex;
+      justify-content: space-between;
+      color: #68716c;
+      font-size: 12px;
+      margin-top: 10px;
+    }
+
+    .listing-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .view-btn {
+      flex: 1;
+      padding: 11px;
+      background: #173e35;
+      color: white;
+      border: 0;
+      border-radius: 6px;
+    }
+
+    .save-btn {
+      width: 42px;
+      border: 1px solid #d8dfda;
+      background: white;
+      border-radius: 6px;
+      font-size: 20px;
+    }
+
+    .save-btn.saved {
+      color: #b0343f;
+    }
+
+    .empty {
+      grid-column: 1 / -1;
+      background: white;
+      text-align: center;
+      padding: 45px;
+      border-radius: 7px;
+      color: #68716c;
+    }
+
+    .form-container {
+      max-width: 600px;
+      margin: 35px auto;
+      padding: 0 18px;
+    }
+
+    .form-card,
+    .dashboard-card {
+      background: white;
+      padding: 25px;
+      border-radius: 7px;
+      box-shadow: 0 2px 8px #16281e12;
+      margin-bottom: 16px;
+    }
+
+    .form-card > p {
+      color: #68716c;
+      margin: 8px 0 22px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      font-size: 14px;
+      margin-bottom: 7px;
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .form-button {
+      width: 100%;
+      padding: 13px;
+      background: #173e35;
+      color: white;
+      border: 0;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+
+    .helper {
+      color: #68716c;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    .switch {
+      text-align: center;
+      margin-top: 16px;
+    }
+
+    .switch span {
+      color: #173e35;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .dashboard-card h2 {
+      margin-bottom: 9px;
+    }
+
+    .dashboard-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .stat {
+      background: #f5f6f4;
+      padding: 13px;
+      border-radius: 6px;
+      color: #68716c;
+    }
+
+    .stat strong {
+      display: block;
+      color: #173e35;
+      font-size: 20px;
+      margin-bottom: 4px;
+    }
+
+    .my-listing,
+    .inbox-item {
+      padding: 13px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .delete-btn {
+      border: 0;
+      border-radius: 5px;
+      padding: 8px 12px;
+      background: #b8343d;
+      color: white;
+      margin-top: 8px;
+    }
+
+    .inbox-item button {
+      margin-top: 8px;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #0009;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 20;
+    }
+
+    .modal-content {
+      width: 100%;
+      max-width: 520px;
+      max-height: 90vh;
+      overflow: auto;
+      background: white;
+      padding: 22px;
+      border-radius: 7px;
+    }
+
+    .close {
+      float: right;
+      border: 0;
+      background: transparent;
+      font-size: 24px;
+    }
+
+    .modal-image {
+      width: 100%;
+      max-height: 260px;
+      object-fit: cover;
+      border-radius: 5px;
+      margin: 14px 0;
+    }
+
+    .seller-contact {
+      display: flex;
+      gap: 9px;
+      margin-top: 18px;
+    }
+
+    .seller-contact button,
+    .seller-contact a {
+      flex: 1;
+      text-align: center;
+      padding: 12px;
+      border: 0;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .seller-contact button {
+      color: white;
+      background: #173e35;
+    }
+
+    .seller-contact a {
+      color: white;
+      background: #16834a;
+    }
+
+    .chat-page {
+      max-width: 850px;
+      margin: 28px auto;
+      padding: 0 18px;
+    }
+
+    .chat-panel {
+      background: white;
+      border-radius: 7px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px #16281e12;
+    }
+
+    .chat-header {
+      padding: 16px;
+      border-bottom: 1px solid #e5e8e5;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .chat-messages {
+      height: 55vh;
+      min-height: 300px;
+      overflow-y: auto;
+      padding: 18px;
+      background: #f5f6f4;
+    }
+
+    .chat-message {
+      width: fit-content;
+      max-width: 80%;
+      padding: 10px 13px;
+      margin: 0 0 12px;
+      border-radius: 8px;
+      background: white;
+      overflow-wrap: anywhere;
+    }
+
+    .chat-message.mine {
+      margin-left: auto;
+      background: #dcebdc;
+    }
+
+    .chat-message small {
+      display: block;
+      color: #68716c;
+      font-size: 11px;
+      margin-top: 5px;
+    }
+
+    .chat-form {
+      display: flex;
+      gap: 9px;
+      padding: 12px;
+      border-top: 1px solid #e5e8e5;
+    }
+
+    .chat-form input {
+      flex: 1;
+    }
+
+    .chat-form button {
+      border: 0;
+      border-radius: 6px;
+      padding: 0 18px;
+      background: #173e35;
+      color: white;
+    }
+
+    .chat-empty {
+      text-align: center;
+      color: #68716c;
+      padding: 35px 10px;
+    }
+
+    .toast {
+      display: none;
+      position: fixed;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #202622;
+      color: white;
+      padding: 12px 18px;
+      border-radius: 6px;
+      z-index: 30;
+    }
+
+    @media (max-width: 760px) {
+      header {
+        padding: 0 10px;
+      }
+
+      nav {
+        gap: 0;
+      }
+
+      nav button {
+        padding: 9px 6px;
+        font-size: 12px;
+      }
+
+      .logo {
+        font-size: 16px;
+      }
+
+      .market-header {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .market-tools {
+        flex-direction: column;
+      }
+
+      .search {
+        width: 100%;
+      }
+
+      .filters,
+      .listings {
+        grid-template-columns: 1fr;
+      }
+
+      .hero h1 {
+        font-size: 30px;
+      }
+
+      .dashboard-stats {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .chat-header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .chat-form button {
+        padding: 0 12px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="logo">
+      <div class="logo-icon">🎮</div>
+      GameVault
+    </div>
+
+    <nav>
+      <button onclick="showPage('home')">Home</button>
+      <button onclick="showPage('marketplace')">Marketplace</button>
+      <button id="dashboardBtn" style="display: none" onclick="showPage('dashboard')">Dashboard</button>
+      <button id="loginBtn" class="primary" onclick="showPage('login')">Login</button>
+    </nav>
+  </header>
+
+  <section id="home" class="page active">
+    <div class="hero">
+      <h1>Buy &amp; Sell <span>Gaming Accounts</span></h1>
+      <p>Discover gaming accounts from sellers across Nigeria.</p>
+      <button onclick="showPage('marketplace')">Browse accounts</button>
+    </div>
+  </section>
+
+  <section id="marketplace" class="page">
+    <main class="market">
+      <div class="market-header">
+        <div>
+          <h1>Marketplace</h1>
+          <p>Compare listings and contact sellers directly.</p>
+        </div>
+
+        <div class="market-tools">
+          <input
+            class="search"
+            id="search"
+            placeholder="Search accounts..."
+            oninput="displayListings()"
+          >
+          <button class="sell-btn" onclick="showPage(currentUser ? 'sell' : 'login')">
+            + Post an account
+          </button>
+        </div>
+      </div>
+
+      <div class="filters">
+        <select id="gameFilter" onchange="displayListings()">
+          <option value="">All games</option>
+        </select>
+
+        <input
+          id="locationFilter"
+          placeholder="Filter by city or location"
+          oninput="displayListings()"
+        >
+
+        <select id="sortBy" onchange="displayListings()">
+          <option value="newest">Newest first</option>
+          <option value="price-low">Price: low to high</option>
+          <option value="price-high">Price: high to low</option>
+        </select>
+      </div>
+
+      <div class="results-line" id="resultsLine"></div>
+      <div class="listings" id="listings"></div>
+    </main>
+  </section>
+
+  <section id="login" class="page">
+    <div class="form-container">
+      <div class="form-card">
+        <h2>Welcome back</h2>
+        <p>Login to your GameVault account.</p>
+
+        <div class="form-group">
+          <label for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" placeholder="you@example.com">
+        </div>
+
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" placeholder="Your password">
+        </div>
+
+        <button class="form-button" onclick="login()">Login</button>
+
+        <div class="switch">
+          Don't have an account?
+          <span onclick="showPage('register')">Create one</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="register" class="page">
+    <div class="form-container">
+      <div class="form-card">
+        <h2>Create account</h2>
+        <p>Join GameVault and start selling.</p>
+
+        <div class="form-group">
+          <label for="registerName">Username</label>
+          <input id="registerName" placeholder="Your name">
+        </div>
+
+        <div class="form-group">
+          <label for="registerEmail">Email</label>
+          <input type="email" id="registerEmail" placeholder="you@example.com">
+        </div>
+
+        <div class="form-group">
+          <label for="registerPassword">Password</label>
+          <input type="password" id="registerPassword" placeholder="Create a password">
+        </div>
+
+        <button class="form-button" onclick="register()">Create account</button>
+
+        <div class="switch">
+          Already have an account?
+          <span onclick="showPage('login')">Login</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="dashboard" class="page">
+    <main class="dashboard">
+      <div class="dashboard-card">
+        <h2 id="welcome"></h2>
+        <p class="muted">Manage your account, listings and buyer messages.</p>
+        <div class="dashboard-stats" id="dashboardStats"></div>
+        <br>
+        <button class="sell-btn" onclick="showPage('sell')">+ Post an account</button>
+      </div>
+
+      <div class="dashboard-card">
+        <h2>Your listings</h2>
+        <div id="myListings"></div>
+      </div>
+
+      <div class="dashboard-card">
+        <h2>Your chats</h2>
+        <div id="myChats"></div>
+      </div>
+    </main>
+  </section>
+
+  <section id="sell" class="page">
+    <div class="form-container">
+      <div class="form-card">
+        <h2>Post an account</h2>
+        <p>Add clear details so buyers can compare your listing.</p>
+
+        <div class="form-group">
+          <label for="sellGame">Game</label>
+          <select id="sellGame">
+            <option>eFootball</option>
+            <option>EA Sports FC</option>
+            <option>Call of Duty</option>
+            <option>Free Fire</option>
+            <option>PUBG</option>
+            <option>Roblox</option>
+            <option>Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="sellTitle">Listing title</label>
+          <input id="sellTitle" placeholder="eFootball account with epic players">
+        </div>
+
+        <div class="form-group">
+          <label for="sellPrice">Price (₦)</label>
+          <input type="number" min="1" id="sellPrice" placeholder="150000">
+        </div>
+
+        <div class="form-group">
+          <label for="sellPlatform">Platform</label>
+          <select id="sellPlatform">
+            <option>Android</option>
+            <option>iPhone</option>
+            <option>PlayStation</option>
+            <option>Xbox</option>
+            <option>PC</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="sellDescription">Account details</label>
+          <textarea id="sellDescription" placeholder="Describe the level, items, rank and anything buyers should know."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="sellPhone">WhatsApp number</label>
+          <input type="tel" id="sellPhone" placeholder="2348012345678" inputmode="tel">
+          <div class="helper">Enter your number with country code, without + or spaces.</div>
+        </div>
+
+        <div class="form-group">
+          <label for="sellLocation">City / location</label>
+          <input id="sellLocation" placeholder="Lagos, Nigeria">
+        </div>
+
+        <div class="form-group">
+          <label for="sellImage">Account image</label>
+          <input type="file" id="sellImage" accept="image/*">
+        </div>
+
+        <button class="form-button" onclick="createListing()">Post account</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="chat" class="page">
+    <main class="chat-page">
+      <div class="chat-panel">
+        <div class="chat-header">
+          <div>
+            <strong id="chatSeller"></strong>
+            <div class="muted" id="chatListing"></div>
+          </div>
+
+          <button class="sell-btn" onclick="showPage('dashboard')">
+            Back to dashboard
+          </button>
+        </div>
+
+        <div class="chat-messages" id="chatMessages"></div>
+
+        <form class="chat-form" onsubmit="sendChatMessage(event)">
+          <input id="chatInput" placeholder="Write a message..." autocomplete="off" required>
+          <button type="submit">Send</button>
+        </form>
+      </div>
+    </main>
+  </section>
+
+  <div class="modal" id="modal" onclick="if (event.target === this) closeModal()">
+    <div class="modal-content">
+      <button class="close" onclick="closeModal()" aria-label="Close">×</button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <script>
+    let currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+    let listings = JSON.parse(localStorage.getItem("listings")) || [];
+    let activeListingId = null;
+
+    function escapeHTML(value) {
+      return String(value || "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[char]));
+    }
+
+    function showPage(page) {
+      if (
+        (page === "dashboard" || page === "chat" || page === "sell") &&
+        !currentUser
+      ) {
+        page = "login";
+      }
+
+      document.querySelectorAll(".page").forEach(section => {
+        section.classList.remove("active");
+      });
+
+      document.getElementById(page).classList.add("active");
+
+      if (page === "marketplace") {
+        populateGameFilter();
+        displayListings();
+      }
+
+      if (page === "dashboard") {
+        updateDashboard();
+      }
+
+      if (page === "chat") {
+        renderChatMessages();
+      }
+    }
+
+    function register() {
+      const name = document.getElementById("registerName").value.trim();
+      const email = document.getElementById("registerEmail").value.trim().toLowerCase();
+      const password = document.getElementById("registerPassword").value;
+
+      if (!name || !email || !password) {
+        return alert("Please fill in all fields.");
+      }
+
+      if (users.some(user => user.email === email)) {
+        return alert("An account with this email already exists.");
+      }
+
+      currentUser = {
+        id: Date.now(),
+        name,
+        email,
+        password
+      };
+
+      users.push(currentUser);
+      localStorage.setItem("users", JSON.stringify(users));
+      localStorage.setItem("currentUser", JSON.stringify(currentUser));
+
+      updateHeader();
+      showPage("dashboard");
+    }
+
+    function login() {
+      const email = document.getElementById("loginEmail").value.trim().toLowerCase();
+      const password = document.getElementById("loginPassword").value;
+
+      const user = users.find(item =>
+        item.email === email && item.password === password
+      );
+
+      if (!user) {
+        return alert("Incorrect email or password.");
+      }
+
+      currentUser = user;
+      localStorage.setItem("currentUser", JSON.stringify(user));
+
+      updateHeader();
+      showPage("dashboard");
+    }
+
+    function updateHeader() {
+      const loginBtn = document.getElementById("loginBtn");
+      const dashboardBtn = document.getElementById("dashboardBtn");
+
+      if (currentUser) {
+        loginBtn.textContent = "Logout";
+        loginBtn.onclick = logout;
+        dashboardBtn.style.display = "block";
+      } else {
+        loginBtn.textContent = "Login";
+        loginBtn.onclick = () => showPage("login");
+        dashboardBtn.style.display = "none";
+      }
+    }
+
+    function logout() {
+      currentUser = null;
+      localStorage.removeItem("currentUser");
+      updateHeader();
+      showPage("home");
+    }
+
+    function createListing() {
+      if (!currentUser) {
+        return showPage("login");
+      }
+
+      const title = document.getElementById("sellTitle").value.trim();
+      const price = Number(document.getElementById("sellPrice").value);
+      const description = document.getElementById("sellDescription").value.trim();
+      const phone = document.getElementById("sellPhone").value.replace(/\D/g, "");
+      const location = document.getElementById("sellLocation").value.trim();
+
+      if (!title || !description || !phone || !location || price <= 0) {
+        return alert("Complete every field and enter a valid price.");
+      }
+
+      const imageInput = document.getElementById("sellImage");
+
+      function saveListing(image) {
+        listings.unshift({
+          id: Date.now(),
+          game: document.getElementById("sellGame").value,
+          title,
+          price,
+          platform: document.getElementById("sellPlatform").value,
+          description,
+          phone,
+          location,
+          image,
+          seller: currentUser.name,
+          sellerId: currentUser.id,
+          createdAt: Date.now()
+        });
+
+        localStorage.setItem("listings", JSON.stringify(listings));
+
+        [
+          "sellTitle",
+          "sellPrice",
+          "sellDescription",
+          "sellPhone",
+          "sellLocation"
+        ].forEach(id => {
+          document.getElementById(id).value = "";
+        });
+
+        imageInput.value = "";
+        alert("Your account listing has been posted.");
+        showPage("marketplace");
+      }
+
+      if (imageInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = event => saveListing(event.target.result);
+        reader.readAsDataURL(imageInput.files[0]);
+      } else {
+        saveListing("");
+      }
+    }
+
+    function populateGameFilter() {
+      const select = document.getElementById("gameFilter");
+      const selected = select.value;
+      const games = [...new Set(listings.map(item => item.game))].sort();
+
+      select.innerHTML = '<option value="">All games</option>' +
+        games.map(game =>
+          `<option value="${escapeHTML(game)}">${escapeHTML(game)}</option>`
+        ).join("");
+
+      select.value = games.includes(selected) ? selected : "";
+    }
+
+    function displayListings() {
+      const search = document.getElementById("search").value.trim().toLowerCase();
+      const game = document.getElementById("gameFilter").value;
+      const location = document.getElementById("locationFilter").value.trim().toLowerCase();
+      const sort = document.getElementById("sortBy").value;
+
+      let results = listings.filter(item => {
+        const searchable = [
+          item.title,
+          item.game,
+          item.platform,
+          item.location,
+          item.description
+        ].some(value => String(value || "").toLowerCase().includes(search));
+
+        return searchable &&
+          (!game || item.game === game) &&
+          (!location || String(item.location || "").toLowerCase().includes(location));
+      });
+
+      if (sort === "price-low") {
+        results.sort((a, b) => Number(a.price) - Number(b.price));
+      }
+
+      if (sort === "price-high") {
+        results.sort((a, b) => Number(b.price) - Number(a.price));
+      }
+
+      if (sort === "newest") {
+        results.sort((a, b) =>
+          Number(b.createdAt || b.id) - Number(a.createdAt || a.id)
+        );
+      }
+
+      document.getElementById("resultsLine").textContent =
+        `${results.length} account${results.length === 1 ? "" : "s"} found`;
+
+      const container = document.getElementById("listings");
+
+      if (!results.length) {
+        container.innerHTML = `
+          <div class="empty">
+            <h2>No accounts found</h2>
+            <p>Try changing your search or filters.</p>
+          </div>
+        `;
+        return;
+      }
+
+      const saved = JSON.parse(localStorage.getItem("savedListings") || "[]");
+
+      container.innerHTML = results.map(item => {
+        const image = item.image ||
+          "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=900&q=80";
+
+        return `
+          <article class="listing">
+            <img src="${escapeHTML(image)}" alt="${escapeHTML(item.title)}">
+
+            <div class="listing-body">
+              <div class="game">${escapeHTML(item.game)}</div>
+              <h3>${escapeHTML(item.title)}</h3>
+              <div class="price">₦${Number(item.price).toLocaleString()}</div>
+
+              <div class="seller">
+                Seller: ${escapeHTML(item.seller)}<br>
+                Platform: ${escapeHTML(item.platform)}
+              </div>
+
+              <div class="listing-meta">
+                <span>${escapeHTML(item.location || "Nigeria")}</span>
+                <span>${item.createdAt ? new Date(item.createdAt).toLocaleDateString() : ""}</span>
+              </div>
+
+              <div class="listing-actions">
+                <button class="view-btn" onclick="viewListing(${Number(item.id)})">
+                  View account
+                </button>
+
+                <button
+                  class="save-btn ${saved.includes(item.id) ? "saved" : ""}"
+                  onclick="toggleSaved(${Number(item.id)})"
+                  title="Save listing"
+                  aria-label="Save listing"
+                >
+                  ${saved.includes(item.id) ? "♥" : "♡"}
+                </button>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function viewListing(id) {
+      const item = listings.find(listing => Number(listing.id) === Number(id));
+
+      if (!item) {
+        return;
+      }
+
+      const image = item.image ||
+        "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=900&q=80";
+      const phone = String(item.phone || "").replace(/\D/g, "");
+      const message = encodeURIComponent(
+        `Hi ${item.seller}, I'm interested in your ${item.title} listing on GameVault.`
+      );
+
+      document.getElementById("modalContent").innerHTML = `
+        <h2>${escapeHTML(item.title)}</h2>
+
+        <img
+          class="modal-image"
+          src="${escapeHTML(image)}"
+          alt="${escapeHTML(item.title)}"
+        >
+
+        <p><strong>Game:</strong> ${escapeHTML(item.game)}</p>
+        <p><strong>Platform:</strong> ${escapeHTML(item.platform)}</p>
+        <p><strong>Price:</strong> ₦${Number(item.price).toLocaleString()}</p>
+        <p><strong>Seller:</strong> ${escapeHTML(item.seller)}</p>
+        <p><strong>Location:</strong> ${escapeHTML(item.location || "Nigeria")}</p>
+
+        <br>
+        <p>${escapeHTML(item.description).replace(/\n/g, "<br>")}</p>
+
+        <div class="seller-contact">
+          <button onclick="buyListing(${Number(item.id)})">
+            Buy / chat with seller
+          </button>
+
+          ${phone
+            ? `<a href="https://wa.me/${phone}?text=${message}" target="_blank" rel="noopener">WhatsApp</a>`
+            : ""}
+        </div>
+      `;
+
+      document.getElementById("modal").style.display = "flex";
+    }
+
+    function closeModal() {
+      document.getElementById("modal").style.display = "none";
+    }
+
+    function buyListing(id) {
+      if (!currentUser) {
+        closeModal();
+        alert("Please log in to chat with the seller.");
+        showPage("login");
+        return;
+      }
+
+      const item = listings.find(listing => Number(listing.id) === Number(id));
+
+      if (!item) {
+        return;
+      }
+
+      if (Number(item.sellerId) === Number(currentUser.id)) {
+        alert("This is your listing.");
+        return;
+      }
+
+      activeListingId = item.id;
+
+      document.getElementById("chatSeller").textContent =
+        `Chat with ${item.seller}`;
+
+      document.getElementById("chatListing").textContent =
+        `${item.title} · ₦${Number(item.price).toLocaleString()}`;
+
+      closeModal();
+      showPage("chat");
+    }
+
+    function chatStorageKey(listingId) {
+      return `gamevault_chat_${listingId}`;
+    }
+
+    function renderChatMessages() {
+      if (!activeListingId || !currentUser) {
+        return;
+      }
+
+      const messages = JSON.parse(
+        localStorage.getItem(chatStorageKey(activeListingId)) || "[]"
+      );
+
+      const container = document.getElementById("chatMessages");
+
+      if (!messages.length) {
+        container.innerHTML = `
+          <div class="chat-empty">
+            Send a message to start chatting about this account.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = messages.map(message => `
+        <div class="chat-message ${Number(message.senderId) === Number(currentUser.id) ? "mine" : ""}">
+          ${escapeHTML(message.text)}
+          <small>
+            ${escapeHTML(message.senderName)} ·
+            ${new Date(message.time).toLocaleString()}
+          </small>
+        </div>
+      `).join("");
+
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function sendChatMessage(event) {
+      event.preventDefault();
+
+      const input = document.getElementById("chatInput");
+      const text = input.value.trim();
+
+      if (!text || !activeListingId || !currentUser) {
+        return;
+      }
+
+      const key = chatStorageKey(activeListingId);
+      const messages = JSON.parse(localStorage.getItem(key) || "[]");
+
+      messages.push({
+        senderId: currentUser.id,
+        senderName: currentUser.name,
+        text,
+        time: Date.now()
+      });
+
+      localStorage.setItem(key, JSON.stringify(messages));
+      input.value = "";
+      renderChatMessages();
+    }
+
+    function toggleSaved(id) {
+      let saved = JSON.parse(localStorage.getItem("savedListings") || "[]");
+
+      saved = saved.includes(id)
+        ? saved.filter(item => item !== id)
+        : [...saved, id];
+
+      localStorage.setItem("savedListings", JSON.stringify(saved));
+      displayListings();
+
+      const toast = document.getElementById("toast");
+      toast.textContent = saved.includes(id)
+        ? "Listing saved"
+        : "Listing removed from saved";
+      toast.style.display = "block";
+
+      setTimeout(() => {
+        toast.style.display = "none";
+      }, 1800);
+    }
+
+    function updateDashboard() {
+      document.getElementById("welcome").textContent =
+        `Welcome, ${currentUser.name}!`;
+
+      const mine = listings.filter(item =>
+        Number(item.sellerId) === Number(currentUser.id)
+      );
+
+      const saved = JSON.parse(localStorage.getItem("savedListings") || "[]");
+      const total = mine.reduce(
+        (sum, item) => sum + Number(item.price || 0),
+        0
+      );
+
+      document.getElementById("dashboardStats").innerHTML = `
+        <div class="stat">
+          <strong>${mine.length}</strong>
+          Active listings
+        </div>
+
+        <div class="stat">
+          <strong>${saved.length}</strong>
+          Saved accounts
+        </div>
+
+        <div class="stat">
+          <strong>₦${total.toLocaleString()}</strong>
+          Listing value
+        </div>
+      `;
+
+      const listingContainer = document.getElementById("myListings");
+
+      if (mine.length) {
+        listingContainer.innerHTML = mine.map(item => `
+          <div class="my-listing">
+            <strong>${escapeHTML(item.title)}</strong><br>
+            ₦${Number(item.price).toLocaleString()} ·
+            ${escapeHTML(item.location || "Nigeria")}<br>
+
+            <button
+              class="delete-btn"
+              onclick="deleteListing(${Number(item.id)})"
+            >
+              Delete listing
+            </button>
+          </div>
+        `).join("");
+      } else {
+        listingContainer.innerHTML =
+          '<p class="muted">You have not posted any accounts yet.</p>';
+      }
+
+      renderInbox();
+    }
+
+    function renderInbox() {
+      const container = document.getElementById("myChats");
+      const chats = [];
+
+      for (const item of listings) {
+        const messages = JSON.parse(
+          localStorage.getItem(chatStorageKey(item.id)) || "[]"
+        );
+
+        const isSeller =
+          Number(item.sellerId) === Number(currentUser.id);
+
+        const hasMessages = messages.length > 0;
+        const isBuyer = messages.some(message =>
+          Number(message.senderId) === Number(currentUser.id)
+        );
+
+        if ((isSeller && hasMessages) || isBuyer) {
+          const buyerMessage = messages.find(message =>
+            Number(message.senderId) !== Number(item.sellerId)
+          );
+
+          const otherName = isSeller
+            ? (buyerMessage ? buyerMessage.senderName : "Buyer")
+            : item.seller;
+
+          chats.push({
+            item,
+            messages,
+            otherName
+          });
+        }
+      }
+
+      if (!chats.length) {
+        container.innerHTML =
+          '<p class="muted">Your conversations will appear here.</p>';
+        return;
+      }
+
+      container.innerHTML = chats.map(({ item, messages, otherName }) => {
+        const latest = messages[messages.length - 1];
+
+        return `
+          <div class="inbox-item">
+            <strong>${escapeHTML(item.title)}</strong><br>
+            <span class="muted">Chat with ${escapeHTML(otherName)}</span><br>
+            <span>${escapeHTML(latest.text)}</span><br>
+
+            <button
+              class="sell-btn"
+              onclick="openChat(${Number(item.id)})"
+            >
+              Open chat
+            </button>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function openChat(id) {
+      const item = listings.find(listing => Number(listing.id) === Number(id));
+
+      if (!item) {
+        return;
+      }
+
+      activeListingId = item.id;
+
+      const messages = JSON.parse(
+        localStorage.getItem(chatStorageKey(item.id)) || "[]"
+      );
+
+      const isSeller =
+        Number(item.sellerId) === Number(currentUser.id);
+
+      const buyer = messages.find(message =>
+        Number(message.senderId) !== Number(item.sellerId)
+      );
+
+      document.getElementById("chatSeller").textContent = isSeller
+        ? `Chat with ${buyer ? buyer.senderName : "buyer"}`
+        : `Chat with ${item.seller}`;
+
+      document.getElementById("chatListing").textContent =
+        `${item.title} · ₦${Number(item.price).toLocaleString()}`;
+
+      showPage("chat");
+    }
+
+    function deleteListing(id) {
+      if (!confirm("Delete this listing?")) {
+        return;
+      }
+
+      listings = listings.filter(item =>
+        Number(item.id) !== Number(id)
+      );
+
+      localStorage.setItem("listings", JSON.stringify(listings));
+      updateDashboard();
+    }
+
+    function logout() {
+      currentUser = null;
+      localStorage.removeItem("currentUser");
+      updateHeader();
+      showPage("home");
+    }
+
+    updateHeader();
+    populateGameFilter();
+    displayListings();
+  </script>
+</body>
+</html>
+   
